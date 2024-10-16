@@ -191,13 +191,10 @@ flip_to_close_one_step = False    # f_to_close steps (steps from flip up to clos
 led_init_status = False
 # ##################################################################################
 
-
-# Initialize the ServoKit instance for 16 channels
+# initrialise servos
 kit = ServoKit(channels=16)
-
-# Define the servo channels
-t_servo_channel = 0  # Channel for the top servo
-b_servo_channel = 1  # Channel for the bottom servo
+t_servo = kit.servo[0]  # Top servo on channel 0
+b_servo = kit.servo[1]  # Bottom servo on channel 1
 
 
 def init_top_cover_led():
@@ -519,7 +516,30 @@ def cam_led_test():
     
     top_cover_led.off()                # top cover led PWM is set to 0
 
-
+def control_servos(movements):
+    for move in movements:
+        if move == 'S1':
+            b_servo.angle = b_servo_CW
+            time.sleep(b_spin_time)
+            b_servo.angle = b_home
+            time.sleep(b_spin_time)
+        elif move == 'S3':
+            b_servo.angle = b_servo_CCW
+            time.sleep(b_spin_time)
+            b_servo.angle = b_home
+            time.sleep(b_spin_time)
+        elif move == 'F1':
+            t_servo.angle = t_servo_flip
+            time.sleep(t_flip_to_close_time)
+            t_servo.angle = t_servo_close
+            time.sleep(t_flip_to_close_time)
+        elif move == 'R1':
+            b_servo.angle = b_servo_CW
+            time.sleep(b_rotate_time)
+            b_servo.angle = b_home
+            time.sleep(b_rotate_time)
+        else:
+            print(f"Unknown move: {move}")
 def servo_start_pos(start_pos):
     """Servos are positioned to the intended start position, meaning top_cover on read position and cube_holder on its middle position"""
     
